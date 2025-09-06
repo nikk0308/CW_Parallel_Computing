@@ -37,5 +37,27 @@
 *.out
 *.app
 
-# debug information files
+# Debug information files
 *.dwo
+
+# --------------------------
+# JetBrains
+.idea/
+
+# --------------------------
+# CMake
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+
+# --------------------------
+# Logs & misc
+*.log
+*.tmp
+*.swp
+*.DS_Store
