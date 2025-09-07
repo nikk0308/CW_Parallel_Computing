@@ -1,6 +1,4 @@
 #include "SearchServer.h"
-#define WORKERS_THREADS_AMOUNT 5
-#define CLIENTS_THREADS_AMOUNT 2
 #define REFRESH_RATE 10
 #define CLIENTS_NOTIFY_RATE 10
 
@@ -12,8 +10,16 @@ using namespace filesystem;
 
 int main() {
     try {
-        SearchServer server("0.0.0.0", 9090, WORKERS_THREADS_AMOUNT,
-            CLIENTS_THREADS_AMOUNT, REFRESH_RATE, CLIENTS_NOTIFY_RATE);
+        int workersThreadsAmount;
+        int clientsThreadsAmount;
+        cout << "Input index builders threads amount: ";
+        cin >> workersThreadsAmount;
+        cout << "Input clients threads amount: ";
+        cin >> clientsThreadsAmount;
+
+        SearchServer server("0.0.0.0", 9090, workersThreadsAmount, clientsThreadsAmount,
+            REFRESH_RATE, CLIENTS_NOTIFY_RATE);
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cin.get();
     }
     catch (const exception& ex) {

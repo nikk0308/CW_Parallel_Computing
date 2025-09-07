@@ -177,7 +177,7 @@ SOCKET SearchServer::CreateListenSocket(const string& socketHost, int socketPort
         closesocket(listenSocket);
         return INVALID_SOCKET;
     }
-    if (listen(listenSocket, 64) == SOCKET_ERROR) {
+    if (listen(listenSocket, SOMAXCONN) == SOCKET_ERROR) {
         closesocket(listenSocket);
         return INVALID_SOCKET;
     }

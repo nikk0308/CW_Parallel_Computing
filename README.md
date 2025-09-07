@@ -27,7 +27,12 @@
     C:\msys64\ucrt64\bin
     ```
 - [Node.js 18+](https://nodejs.org/en/download/) — for running the web client  
-- [Python 3.10+](https://www.python.org/downloads/) — for Locust load testing  
+- [Python 3.10+](https://www.python.org/downloads/) — for Locust load testing
+  - Don't forget to add to your system PATH important Python folders
+  - After installation, run this inside the PowerShell to install Locust
+    ```bash
+    pip install locust
+    ```
 > **Note**  
 > You should restart your PC after any installation.
 ---
@@ -50,9 +55,10 @@
   - You have launched the server!
   - Paste in the console the whole client.exe path to launch the client (you can do it many times)
  
+
 ### Web client
 > **Note**  
-> You should start C++ server before starting web client.
+> You should start C++ server before starting the web client.
 - Go to the project folder (`CW_Parallel_Computing`)
 - Paste this code
   ```bash
@@ -61,3 +67,34 @@
   node server/proxy.js
   ```
 - Open `http://localhost:3000` in your browser
+
+---
+## Tests
+> **Note**  
+> Before any test starts, you must launch the server.
+
+### C++ client test
+> **Note**  
+> This test represents the peak users concurrency.
+
+- You should have installed the locust program
+- Go to your project folder (`CW_Parallel_Computing`)
+- Open a terminal and run:
+  ```bash
+  locust -f Tests/locust_tcp.py
+  ```
+- Input test settings and start test
+
+### Web client test
+> **Note**  
+> This test represents the peak search requests concurrency.
+
+> **Note**  
+> Before starting this test, launch the web client.
+- You should have installed the locust program
+- Go to your project folder (`CW_Parallel_Computing`)
+- Open a terminal and run:
+  ```bash
+  locust -f Tests/locust_web.py --host=http://127.0.0.1:3000
+  ```
+- Input test settings and start test
