@@ -3,7 +3,7 @@
 
 using namespace std;
 
-ThreadPool::ThreadPool(const function<void(SOCKET)>& func, const function<void(SOCKET, int)>& notifyFunc,
+ThreadPool::ThreadPool(const function<void(SOCKET)>& func, const function<bool(SOCKET, int)>& notifyFunc,
                        int workersThreadCount, int clientsThreadCount, int notifyIntervalSeconds)
     : _handleClientTask(func), _notifyClientTask(notifyFunc), _notifyIntervalSeconds(notifyIntervalSeconds)
 {
@@ -109,8 +109,20 @@ void ThreadPool::ClientNotifier()
     while (_isRunning.load())
     {
         unique_lock lock(_mtxClients);
-        for (int i = 0; i < _clientsIds.size(); i++)
-            _notifyClientTask(_clientsIds[i], i + 1);
+        deque<SOCKET> aliveClients;
+
+        int position = 1;
+
+        for (SOCKET sock : _clientsIds)
+            if (_notifyClientTask(sock, position))
+            {
+                aliveClients.push_back(sock);
+                position++;
+            }
+            else
+                closesocket(sock);
+
+        _clientsIds.swap(aliveClients);
         lock.unlock();
 
         this_thread::sleep_for(chrono::seconds(_notifyIntervalSeconds));

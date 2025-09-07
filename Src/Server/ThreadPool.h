@@ -22,7 +22,7 @@ private:
     vector<thread> _clientHolders;
     deque<SOCKET> _clientsIds;
     function<void(SOCKET)> _handleClientTask;
-    function<void(SOCKET, int)> _notifyClientTask;
+    function<bool(SOCKET, int)> _notifyClientTask;
     thread _clientNotifierThread;
     const int _notifyIntervalSeconds;
 
@@ -36,7 +36,7 @@ private:
     void ClientLoop();
     void ClientNotifier();
 public:
-    ThreadPool(const function<void(SOCKET)>& func, const function<void(SOCKET, int)>& notifyFunc,
+    ThreadPool(const function<void(SOCKET)>& func, const function<bool(SOCKET, int)>& notifyFunc,
         int workersThreadCount, int clientsThreadCount, int notifyIntervalSeconds);
     ~ThreadPool();
 

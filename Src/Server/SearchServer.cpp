@@ -21,7 +21,7 @@ SearchServer::SearchServer(const string& host, int port, int workersThreadsAmoun
         throw runtime_error("[ERROR] Data folder not found at: " + dataRoot.string());
 
     _pool = new ThreadPool([this](SOCKET clientSocket) { HandleClient(clientSocket); },
-    [this](SOCKET clientSock, int queuePlace) { NotifyClientQueuePlace(clientSock, queuePlace); },
+    [this](SOCKET clientSock, int queuePlace) { return NotifyClientQueuePlace(clientSock, queuePlace); },
         workersThreadsAmount, clientsThreadsAmount, notifyIntervalSeconds);
     _index = new InvertedIndex(_pool);
     _reader = new DocumentReader(dataRoot.string());
@@ -124,9 +124,9 @@ void SearchServer::HandleClient(SOCKET clientSock) {
     CloseSocket(clientSock);
 }
 
-void SearchServer::NotifyClientQueuePlace(SOCKET clientSock, int queuePlace)
+bool SearchServer::NotifyClientQueuePlace(SOCKET clientSock, int queuePlace)
 {
-    WriteAll(clientSock, "[INFO] You are #" + to_string(queuePlace) + " in queue, wait a little bit!\n");
+    return WriteAll(clientSock, "[INFO] You are #" + to_string(queuePlace) + " in queue, wait a little bit!\n");
 }
 
 string SearchServer::HandleCommand(const string& command) {

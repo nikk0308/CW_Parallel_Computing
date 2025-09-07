@@ -1,5 +1,7 @@
 ﻿#include "FileWatcher.h"
 
+#include <algorithm>
+
 FileWatcher::FileWatcher(const string& path, const unordered_set<string> &initializedDocs, int intervalSec)
     : _trackPath(path), _intervalSeconds(intervalSec), _operatedFiles(initializedDocs) {}
 

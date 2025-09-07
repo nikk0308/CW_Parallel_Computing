@@ -29,7 +29,7 @@ private:
 
     void AcceptLoop();
     void HandleClient(SOCKET clientSock);
-    void NotifyClientQueuePlace(SOCKET clientSock, int queuePlace);
+    bool NotifyClientQueuePlace(SOCKET clientSock, int queuePlace);
 
     string HandleCommand(const string &command);
     string CommandSearch(const string &phrase);
