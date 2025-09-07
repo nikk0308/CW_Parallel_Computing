@@ -1,0 +1,109 @@
+﻿body {
+    font-family: monospace;
+    background: #f7f7f7;
+    padding: 20px;
+}
+
+#controls {
+    margin-bottom: 20px;
+}
+
+.file-list {
+    list-style: none;
+    padding: 0;
+}
+
+.file-list li {
+    padding: 6px 10px;
+    margin: 4px 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.file-list li:hover {
+    background: #f0f0f0;
+}
+
+.file-list li b {
+    color: #333;
+}
+
+.menu {
+    margin-top: 10px;
+}
+
+.menu button {
+    margin-right: 5px;
+    padding: 5px 10px;
+    font-family: monospace;
+}
+
+.count {
+    color: #888;
+    margin-left: 5px;
+}
+
+.snippet {
+    padding: 8px 12px;
+    margin: 6px 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: monospace;
+    line-height: 1.4;
+}
+
+.snippet .match {
+    background: yellow;
+    font-weight: bold;
+    padding: 0 2px;
+}
+
+.snippet-list {
+    list-style: none;
+    padding: 0;
+}
+
+.snippet-list li {
+    padding: 6px 10px;
+    margin: 4px 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: default;
+}
+
+.info, .success, .error {
+    padding: 10px 15px;
+    margin: 10px 0;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 14px;
+    border-left: 5px solid;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    white-space: pre-wrap;
+}
+
+.info {
+    border-color: #0077cc;
+    background: #eaf4ff;
+    color: #004a80;
+}
+
+.success {
+    border-color: #2ecc71;
+    background: #eafff3;
+    color: #1d7c46;
+    font-weight: bold;
+}
+
+.error {
+    border-color: #e74c3c;
+    background: #ffecec;
+    color: #a8231a;
+    font-weight: bold;
+}
