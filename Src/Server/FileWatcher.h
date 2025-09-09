@@ -24,7 +24,7 @@ private:
     vector<directory_entry> GetAllFilesFromDir(const path& path);
 
 public:
-    explicit FileWatcher(const string &path, const unordered_set<string> &initializedDocs, int intervalSec);
+    explicit FileWatcher(const string &path, int intervalSec);
 
     void Start(function<void(const vector<string>&)> onNew);
     void Stop();

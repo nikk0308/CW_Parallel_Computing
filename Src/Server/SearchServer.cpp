@@ -24,30 +24,12 @@ SearchServer::SearchServer(const string& host, int port, int workersThreadsAmoun
     [this](SOCKET clientSock, int queuePlace) { return NotifyClientQueuePlace(clientSock, queuePlace); },
         workersThreadsAmount, clientsThreadsAmount, notifyIntervalSeconds);
     _index = new InvertedIndex(_pool);
-    _reader = new DocumentReader(dataRoot.string());
+    _reader = new DocumentReader(dataRoot.string(), _pool);
 
     Start();
 
-    auto files = _reader->GetAllDirectoryFiles(dataRoot.string());
-    if (files.empty())
-        cerr << "[WARN] No files found in: " << dataRoot << endl;
-
-    auto docs = _reader->LoadDocuments(files);
-    _index->GetNewFiles(docs);
-
-    unordered_set<string> indexedDocsPaths;
-    indexedDocsPaths.reserve(docs.size());
-    for (const auto& d : docs)
-        indexedDocsPaths.insert(d.GetPath());
-
-    _watcher = new FileWatcher(dataRoot.string(), indexedDocsPaths, refreshRate);
-    _watcher->Start([this](const vector<string>& newFiles) {
-        auto batch = _reader->LoadDocuments(newFiles);
-        if (!batch.empty()) {
-            cout << "[WATCHER] Added: " << batch.size() << " docs" << endl;
-            _index->GetNewFiles(batch);
-        }
-    });
+    _watcher = new FileWatcher(dataRoot.string(), refreshRate);
+    _watcher->Start([this](const vector<string>& newFiles) { WatcherIndexRefresh(newFiles); });
 }
 
 SearchServer::~SearchServer() {
@@ -225,4 +207,27 @@ bool SearchServer::WriteAll(SOCKET sock, const string& data) {
 void SearchServer::CloseSocket(SOCKET socket) {
     if (socket != INVALID_SOCKET)
         closesocket(socket);
+}
+
+void SearchServer::WatcherIndexRefresh(const vector<string>& newFiles )
+{
+    cout << "[WATCHER] Triggered with " << newFiles.size() << " files\n";
+    auto startTime = chrono::high_resolution_clock::now();
+    auto batch = _reader->LoadDocuments(newFiles);
+    auto readTime = chrono::high_resolution_clock::now();
+
+    if (batch.empty())
+        return;
+
+    auto readDurationMs = duration_cast<chrono::milliseconds>(readTime - startTime).count();
+    cout << "[READER] Read " << batch.size() << " docs in " << readDurationMs << " ms" << endl;
+    cout << "[INDEX] Started indexing " << batch.size() << " documents" << endl;
+    auto startIndexTime = chrono::high_resolution_clock::now();
+    _index->GetNewFiles(batch);
+    _index->WaitFinished();
+    auto endTime = chrono::high_resolution_clock::now();
+    auto durationIndexMs = duration_cast<chrono::milliseconds>(endTime - startIndexTime).count();
+    auto durationMs = duration_cast<chrono::milliseconds>(endTime - startTime).count();
+    cout << "[INDEX] Indexed " << batch.size() << " documents in " << durationIndexMs << " ms" << endl;
+    cout << "[INDEX] Read and added " << batch.size() << " docs in " << durationMs << " ms" << endl;
 }

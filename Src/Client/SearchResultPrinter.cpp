@@ -90,7 +90,7 @@ void SearchResultPrinter::PrintFileListPage(const vector<pair<string, int>>& sor
     int start = page * FILES_PER_PAGE;
     int end = min((int)sortedFiles.size(), start + FILES_PER_PAGE);
 
-    cout << "\n--- Files page " << (page + 1) << "/" << (int)ceil(sortedFiles.size() * 1.0 / FILES_PER_PAGE) << " ---" << endl;
+    cout << "\n--- Files page " << (page + 1) << "/" << to_string((int)ceil(sortedFiles.size() * 1.0 / FILES_PER_PAGE)) << " ---" << endl;
     for (int i = start; i < end; ++i)
         cout << "[" << i << "] " << sortedFiles[i].first << " (" << sortedFiles[i].second << " matches)" << endl;
 }

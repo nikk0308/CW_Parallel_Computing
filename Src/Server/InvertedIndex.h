@@ -37,6 +37,7 @@ public:
     InvertedIndex(ThreadPool* pool);
     ~InvertedIndex();
 
+    void WaitFinished();
     void GetNewFiles(const vector<Document>& documents);
     void UpdateIndex();
     void ShowIndex();

@@ -7,14 +7,22 @@
 using namespace std;
 using namespace filesystem;
 
-DocumentReader::DocumentReader(const string& path) : _basePath(path) {}
+DocumentReader::DocumentReader(const string& path, ThreadPool* pool) : _basePath(path), _pool(pool) {}
 
 vector<Document> DocumentReader::LoadDocuments(const vector<string>& files)
 {
+    vector<future<Document>> futures;
     vector<Document> result;
     int id = _curIndex;
-    for (auto& file : files)
-        result.emplace_back(id++, file);
+    for (const auto& file : files)
+    {
+        //result.emplace_back(id++, file);
+        futures.push_back(_pool->Submit([id, &file]() { return Document(id, file); }));
+        id++;
+    }
+
+    for (auto& fut : futures)
+        result.emplace_back(fut.get());
 
     _curIndex = id;
     return result;

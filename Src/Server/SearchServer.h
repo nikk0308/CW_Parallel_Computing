@@ -40,6 +40,8 @@ private:
     static bool WriteAll(SOCKET sock, const string &data);
     static void CloseSocket(SOCKET socket);
 
+    void WatcherIndexRefresh(const vector<string>& newFiles );
+
 public:
     SearchServer(const string& host, int port, int workersThreadsAmount, int clientsThreadsAmount,
         int refreshRate, int notifyIntervalSeconds);

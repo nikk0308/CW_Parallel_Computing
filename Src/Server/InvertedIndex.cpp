@@ -60,6 +60,11 @@ vector<pair<string, pair<int, int>>> InvertedIndex::TokenizeWithBothOffsets(cons
     return tokens;
 }
 
+void InvertedIndex::WaitFinished() {
+    if (_updateThread.joinable())
+        _updateThread.join();
+}
+
 void InvertedIndex::GetNewFiles(const vector<Document>& documents)
 {
     unique_lock lock(_indexPreparingMutex);
@@ -98,9 +103,6 @@ void InvertedIndex::UpdateIndex()
     vector<future<unordered_map<string, unordered_map<string, vector<Posting>>>>> futures;
     futures.reserve(indexingDocuments.size());
 
-    cout << "[INDEX] Started indexing " << indexingDocuments.size() << " documents" << endl;
-
-    auto startTime = chrono::high_resolution_clock::now();
     for (const auto& document : indexingDocuments)
     {
         futures.push_back(_pool->Submit([document]()
@@ -140,12 +142,7 @@ void InvertedIndex::UpdateIndex()
     }
     //indexLock.unlock();
 
-    auto endTime = chrono::high_resolution_clock::now();
-    auto durationMs = duration_cast<chrono::milliseconds>(endTime - startTime).count();
-
     _wasIndexedAtStart.store(true);
-
-    cout << "[INDEX] Indexed: " << docsMerged << " documents in " << durationMs << " ms" << endl;
 
     _isIndexingNow.store(false);
     if (_wasAddedNewFiles.load())

@@ -2,8 +2,10 @@
 
 #include <algorithm>
 
-FileWatcher::FileWatcher(const string& path, const unordered_set<string> &initializedDocs, int intervalSec)
-    : _trackPath(path), _intervalSeconds(intervalSec), _operatedFiles(initializedDocs) {}
+FileWatcher::FileWatcher(const string& path, int intervalSec) : _trackPath(path), _intervalSeconds(intervalSec)
+{
+    _operatedFiles = unordered_set<string>();
+}
 
 vector<string> FileWatcher::CheckForNewFiles() {
     vector<string> newFiles;
